@@ -1,5 +1,5 @@
-import tsEslint from 'typescript-eslint';
-import stylistic from '@stylistic/eslint-plugin';
+import tsEslint from 'typescript-eslint'
+import stylistic from '@stylistic/eslint-plugin'
 export default [
   ...tsEslint.configs.recommended,
   {
@@ -18,8 +18,8 @@ export default [
   stylistic.configs.recommended,
   {
     rules: {
-      '@stylistic/semi': ['error', 'always'],
+      '@stylistic/semi': ['error', 'never'],
       '@stylistic/indent': ['error', 2],
     },
   },
-];
+]

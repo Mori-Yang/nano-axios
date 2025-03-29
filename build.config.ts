@@ -1,9 +1,9 @@
-import { defineBuildConfig } from 'unbuild';
+import { defineBuildConfig } from 'unbuild'
 
 export default defineBuildConfig({
-    entries: [
-        'src/index',
-    ],
-    declaration: 'node16',
-    clean: true,
-});
+  entries: [
+    './src/index',
+  ],
+  declaration: 'node16',
+  clean: true,
+})

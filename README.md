@@ -1,1 +1,1 @@
-# nano-axios
+# mori-axios
