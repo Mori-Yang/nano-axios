@@ -29,8 +29,13 @@ export interface MoriAxiosPromise<T = unknown> extends Promise<MoriAxiosResponse
 
 }
 
-// 在 TypeScript 中，接口中的方法是可以重载的。对于 `MoriAxios` 接口中的 `request` 方法，我们可以为其添加重载签名。
-// 下面是一个添加了重载签名的 `MoriAxios` 接口示例，假设我们希望根据不同的参数类型提供不同的调用方式。
+export interface MoriAxiosError extends Error {
+  message: string
+  code?: string | null
+  config?: MoriAxiosRequestConfig
+  request?: XMLHttpRequest
+  response?: MoriAxiosResponse
+}
 
 export interface MoriAxios {
   default: MoriAxiosRequestConfig

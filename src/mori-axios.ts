@@ -1,5 +1,5 @@
 import MoriAxios from './core/MoriAxios'
-import { MoriAxiosInstance, MoriAxiosRequestConfig } from './types'
+import type { MoriAxiosInstance, MoriAxiosRequestConfig } from './types'
 
 const defaults = {
 

@@ -1,4 +1,4 @@
-import { MoriAxiosPromise, MoriAxiosRequestConfig, MoriAxiosResponse } from '../types'
+import type { MoriAxiosPromise, MoriAxiosRequestConfig, MoriAxiosResponse } from '../types'
 
 export default function dispatchRequest(config: MoriAxiosRequestConfig): MoriAxiosPromise<unknown> {
   return xhr(config)

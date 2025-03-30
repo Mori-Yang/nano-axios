@@ -1,8 +1,6 @@
-import { expect, describe, it } from 'vitest';
-import { sum } from '../src';
+import { expect, describe, it } from 'vitest'
 
 describe('should', () => {
-  it('sum', () => {
-    expect(sum(1, 2)).toBe(3);
-  });
-});
+  it('', () => {
+  })
+})

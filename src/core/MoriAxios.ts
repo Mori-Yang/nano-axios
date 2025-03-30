@@ -1,7 +1,7 @@
-import { MoriAxios as IAxios, MoriAxiosPromise, MoriAxiosRequestConfig } from '../types'
+import type { MoriAxios as MoriAxiosT, MoriAxiosPromise, MoriAxiosRequestConfig } from '../types'
 import dispatchRequest from './dispatchRequest'
 
-export default class MoriAxios implements IAxios {
+export default class MoriAxios implements MoriAxiosT {
   default: MoriAxiosRequestConfig
 
   constructor(initConfig: MoriAxiosRequestConfig) {

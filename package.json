@@ -23,15 +23,19 @@
   ],
   "scripts": {
     "dev": "unbuild --watch",
+    "dev:browser": "concurrently \"pnpm dev\" \"pnpm test:browser\"",
     "build": "eslint . && unbuild",
     "test": "vitest",
     "test:debug": "vitest -u",
+    "test:browser": "live-server . --open=test/xhr-test/test.html",
     "pub": "npm run build && npm login && npm publish"
   },
   "keywords": [],
   "devDependencies": {
     "@stylistic/eslint-plugin": "^4.2.0",
     "eslint": "^9.23.0",
+    "live-server": "^1.2.2",
+    "concurrently": "^9.1.2",
     "typescript": "^5.8.2",
     "typescript-eslint": "^8.28.0",
     "unbuild": "^3.5.0",
