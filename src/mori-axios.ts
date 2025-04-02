@@ -1,9 +1,6 @@
 import MoriAxios from './core/MoriAxios'
 import type { MoriAxiosInstance, MoriAxiosRequestConfig } from './types'
-
-const defaults = {
-
-} as MoriAxiosRequestConfig
+import defaultConfig from './core/default'
 
 export function createInstance(config: MoriAxiosRequestConfig): MoriAxiosInstance {
   const ctx = new MoriAxios(config)
@@ -11,6 +8,6 @@ export function createInstance(config: MoriAxiosRequestConfig): MoriAxiosInstanc
   return ctx as MoriAxiosInstance
 }
 
-const moriAxios = createInstance(defaults)
+const moriAxios = createInstance(defaultConfig)
 
 export default moriAxios

@@ -1,5 +1,6 @@
 import type { MoriAxios as MoriAxiosT, MoriAxiosPromise, MoriAxiosRequestConfig } from '../types'
 import dispatchRequest from './dispatchRequest'
+import mergeConfig from './mergeConfig'
 
 export default class MoriAxios implements MoriAxiosT {
   default: MoriAxiosRequestConfig
@@ -16,9 +17,7 @@ export default class MoriAxios implements MoriAxiosT {
       config = url
     }
 
-    return dispatchRequest({
-      ...this.default,
-      ...config,
-    })
+    config = mergeConfig(this.default, config)
+    return dispatchRequest(config)
   }
 }

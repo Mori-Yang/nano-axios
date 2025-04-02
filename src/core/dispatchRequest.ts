@@ -1,4 +1,5 @@
 import type { MoriAxiosPromise, MoriAxiosRequestConfig, MoriAxiosResponse } from '../types'
+import MoriAxiosError, { createMoriAxiosError } from './MoriAxiosError'
 
 export default function dispatchRequest(config: MoriAxiosRequestConfig): MoriAxiosPromise<unknown> {
   return xhr(config)
@@ -8,20 +9,21 @@ function xhr(config: MoriAxiosRequestConfig): MoriAxiosPromise {
   return new Promise((resolve, reject) => {
     const { data = null, url, method = 'GET', headers } = config
 
-    const request = new XMLHttpRequest()
+    let request: XMLHttpRequest | null | undefined = new XMLHttpRequest()
 
+    if (!url) {
+      reject(createMoriAxiosError('Without url', MoriAxiosError.ERR_BAD_REQUEST, config, request))
+    }
+    // -------XHR Event Listeners-------
     /**
      * XMLHttpRequest.readyState
-     * 0-UNSENT: Proxy was created but the open() method has not been called yet
      * 1-OPENED: open() has been called
      * 2-HEADERS_RECEIVED: The send() method has been called, and the header and state are available
-     * 3-LOADING: Downloading; the responseText property already contains some data.
-     * 4-DONE: The download operation has been completed.
+     * 3-LOADING: Downloading; the responseText property already contains some data
+     * 4-DONE: The download operation has been completed
      */
     request.onreadystatechange = function handleLoad() {
-      if (request.readyState === XMLHttpRequest.UNSENT)
-        return
-      if (request.readyState !== XMLHttpRequest.DONE)
+      if (!request || request.readyState !== XMLHttpRequest.DONE)
         return
 
       const response: MoriAxiosResponse = {
@@ -37,18 +39,22 @@ function xhr(config: MoriAxiosRequestConfig): MoriAxiosPromise {
     }
 
     request.onerror = function handleError() {
-      reject(new Error('Network Error'))
+      reject(createMoriAxiosError('Network Error', null, config, request, this.response))
     }
+
+    request.onabort = function handleAbort() {
+      if (!request)
+        return
+
+      reject(createMoriAxiosError('Request aborted', MoriAxiosError.ECONNABORTED, config, request))
+
+      request = null
+    }
+    // -------XHR Event Listeners-------
 
     request.open(method.toUpperCase(), url!, true)
 
-    // ensure data
-    if (data !== null && data !== undefined) {
-      request.send(data as XMLHttpRequestBodyInit)
-    }
-    else {
-      request.send(null)
-    }
+    request.send(data as XMLHttpRequestBodyInit || null)
   })
 }
 
@@ -63,6 +69,8 @@ function settle(
     resolve(response)
   }
   else {
-    reject(new Error(`Request faild with status code ${response.status}`))
+    reject(createMoriAxiosError(`Request faild with status code ${response.status}`, [MoriAxiosError.ERR_BAD_REQUEST, MoriAxiosError.ERR_BAD_RESPONSE][
+      Math.floor(response.status / 100) === 4 ? 0 : 1
+    ], {}, null, response))
   }
 }

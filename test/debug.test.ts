@@ -1,6 +1,8 @@
-import { expect, describe, it } from 'vitest'
+import { describe, it, expect } from 'vitest'
+import { isPlainObject } from '../src/utils'
 
 describe('should', () => {
-  it('', () => {
+  it('type test', () => {
+    expect(isPlainObject(() => {})).toMatchInlineSnapshot(`false`)
   })
 })

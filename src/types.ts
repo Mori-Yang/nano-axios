@@ -29,11 +29,26 @@ export interface MoriAxiosPromise<T = unknown> extends Promise<MoriAxiosResponse
 
 }
 
+export type MoriAxiosErrorCode =
+  'ERR_BAD_OPTION_VALUE' |
+  'ERR_BAD_OPTION' |
+  'ECONNABORTED' |
+  'ETIMEDOUT' |
+  'ERR_NETWORK' |
+  'ERR_FR_TOO_MANY_REDIRECTS' |
+  'ERR_DEPRECATED' |
+  'ERR_BAD_RESPONSE' |
+  'ERR_BAD_REQUEST' |
+  'ERR_CANCELED' |
+  'ERR_NOT_SUPPORT' |
+  'ERR_INVALID_URL'
+
 export interface MoriAxiosError extends Error {
+  isMoriAxiosError: boolean
   message: string
-  code?: string | null
+  code?: MoriAxiosErrorCode | null
   config?: MoriAxiosRequestConfig
-  request?: XMLHttpRequest
+  request?: XMLHttpRequest | null
   response?: MoriAxiosResponse
 }
 
