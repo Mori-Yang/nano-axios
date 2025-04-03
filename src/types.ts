@@ -61,7 +61,7 @@ export interface MoriAxios {
   request(url: string, config?: MoriAxiosRequestConfig): MoriAxiosPromise<unknown>
 }
 
-// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface MoriAxiosInstance extends MoriAxios {
-
+  default: MoriAxiosRequestConfig
+  create: (config: MoriAxiosRequestConfig) => MoriAxios
 }

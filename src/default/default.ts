@@ -1,6 +1,6 @@
 import type { MoriAxiosRequestConfig } from '../types'
 
-export default {
+const defaultConfig = {
   method: 'GET',
   headers: {
     common: {
@@ -12,3 +12,5 @@ export default {
     return status >= 200 && status < 300
   },
 } as MoriAxiosRequestConfig
+
+export default defaultConfig

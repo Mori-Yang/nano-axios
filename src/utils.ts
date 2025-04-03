@@ -77,7 +77,7 @@ export function mergeObject(...args: any[]) {
       res[key] = mergeObject(res[key], val)
     }
     else if (isPlainObject(val)) {
-      res[key] = mergeObject({}, key)
+      res[key] = mergeObject({}, val)
     }
     else {
       res[key] = val
@@ -86,10 +86,7 @@ export function mergeObject(...args: any[]) {
 
   for (let i = 0; i < args.length; i++) {
     const temp = args[i]
-
-    for (const key in temp) {
-      assignValue(temp[key], key)
-    }
+    forEach<object, keyof object>(temp, (v, key) => assignValue(v, key))
   }
 
   return res

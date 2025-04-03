@@ -8,6 +8,7 @@ export default function dispatchRequest(config: MoriAxiosRequestConfig): MoriAxi
 
 function xhr(config: MoriAxiosRequestConfig): MoriAxiosPromise {
   return new Promise((resolve, reject) => {
+    // pre processing
     config = resolveConfig(config)
 
     const { data = null, url, method = 'GET', headers } = config

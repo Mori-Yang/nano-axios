@@ -1,7 +1,4 @@
-import moriAxios, { createInstance } from './mori-axios'
+import moriAxios from './mori-axios'
 
 export * from './types'
 export default moriAxios
-export {
-  createInstance,
-}
