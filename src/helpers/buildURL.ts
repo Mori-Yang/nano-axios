@@ -1,5 +1,5 @@
 import type { MoriAxiosRequestConfig } from '../types'
-import { forEach, isArray, isURLSearchParams, isDate, isPlainObject } from '../utils'
+import { forEach, isArray, isURLSearchParams, isDate, isPlainObject, isUndefined } from '../utils'
 
 interface BuildURLOptions {
   paramsSerializer: MoriAxiosRequestConfig['paramsSerializer']
@@ -15,12 +15,25 @@ export function encode(val: string) {
     .replace(/%5D/gi, ']')
 }
 
-export default function buildURL(url: string, params: MoriAxiosRequestConfig['params'], options: BuildURLOptions): string {
+/**
+ * support
+ * params:{id:[1,2,3]}
+ * ?id[]=1&id[]=2&id[]=3
+ *
+ * [unsupport]
+ * params:{id:{x:2}}
+ * ?id[x]=2
+ *
+ * [unsupport]
+ * params:{id:[[1],[2,3]]}
+ * ?id[0][0]=1&id[1][1]=2&id[1][2]=3
+ */
+export default function buildURL(url: string, params?: MoriAxiosRequestConfig['params'], options?: BuildURLOptions): string {
   if (!params) {
     return url
   }
 
-  const serializer = options.paramsSerializer
+  const serializer = options?.paramsSerializer
   let serializedParams = ''
   if (serializer) {
     serializedParams = serializer(params)
@@ -29,17 +42,13 @@ export default function buildURL(url: string, params: MoriAxiosRequestConfig['pa
     serializedParams = (params as URLSearchParams).toString()
   }
   else {
-    /**
-     * axios.get("https://example/",{params:{id:[1,2,3]}})
-     * https://example/?id[]=1&id[]=2&id[]=3
-     */
     const pairs: string[] = []
     forEach(params, (v, k) => {
       if (v == null) return
 
-      const valueArray: unknown[] = []
+      let valueArray: unknown[] = []
       if (isArray(v)) {
-        valueArray.concat(v)
+        valueArray = valueArray.concat(v)
         k += '[]'
       }
       else {
@@ -48,10 +57,13 @@ export default function buildURL(url: string, params: MoriAxiosRequestConfig['pa
 
       forEach<Array<unknown>, number>(valueArray, (value) => {
         let _val: string
+        if (isUndefined(value) || value === null) {
+          return
+        }
         if (isDate(value)) {
           _val = (value as Date).toISOString()
         }
-        else if (isPlainObject(value)) {
+        else if (isPlainObject(value) || isArray(value)) {
           _val = JSON.stringify(value)
         }
         else {
