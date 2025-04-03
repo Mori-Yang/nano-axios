@@ -1,3 +1,4 @@
+import resolveConfig from '../helpers/resolveConfig'
 import type { MoriAxiosPromise, MoriAxiosRequestConfig, MoriAxiosResponse } from '../types'
 import MoriAxiosError, { createMoriAxiosError } from './MoriAxiosError'
 
@@ -7,8 +8,9 @@ export default function dispatchRequest(config: MoriAxiosRequestConfig): MoriAxi
 
 function xhr(config: MoriAxiosRequestConfig): MoriAxiosPromise {
   return new Promise((resolve, reject) => {
-    const { data = null, url, method = 'GET', headers } = config
+    config = resolveConfig(config)
 
+    const { data = null, url, method = 'GET', headers } = config
     let request: XMLHttpRequest | null | undefined = new XMLHttpRequest()
 
     if (!url) {

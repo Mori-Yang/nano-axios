@@ -22,6 +22,9 @@ export const isBoolearn = typeOfTest('boolean')
 export const isObject = (thing: unknown) => {
   return thing !== null && typeof thing === 'object'
 }
+export const isNull = (thing: unknown) => {
+  return thing === null
+}
 export const isPlainObject = (thing: unknown) => {
   if (!kindOfTest('object')(thing)) {
     return false
@@ -30,6 +33,8 @@ export const isPlainObject = (thing: unknown) => {
   const prototype = Object.getPrototypeOf(thing)
   return (prototype === null || prototype === Object.prototype || Object.getPrototypeOf(prototype) === null) && !(Symbol.toStringTag in (thing as Record<symbol, unknown>)) && !(Symbol.iterator in (thing as Record<symbol, unknown>))
 }
+export const isDate = kindOfTest('Date')
+export const isURLSearchParams = kindOfTest('URLSearchParams')
 
 export const toJSONObject = <T = object>(obj: T) => {
   const stack = new Array(10)
@@ -88,4 +93,29 @@ export function mergeObject(...args: any[]) {
   }
 
   return res
+}
+
+export const forEach = <T, I extends keyof T>(target: T, fn: (item: T[I] | unknown, index: I, target?: T) => void, { allowEnumerable = false } = {}) => {
+  if (isNull(target) || isUndefined(target)) {
+    return
+  }
+
+  if (!isObject(target)) {
+    target = [target] as T
+  }
+
+  if (isArray(target)) {
+    for (let i = 0; i < target.length; i++) {
+      fn.call(null, target[i], i as I, target)
+    }
+  }
+  else {
+    const keys = allowEnumerable ? Object.getOwnPropertyNames(target) : Object.keys(target as object)
+    if (!keys.length) return
+    for (let i = 0; i < keys.length; i++) {
+      const key = keys[i] as I
+
+      fn.call(null, target[key], key, target)
+    }
+  }
 }

@@ -2,16 +2,18 @@ export type Method =
   'get' | 'post' | 'delete' | 'options' | 'pathc' | 'put' | 'head' |
   'GET' | 'POST' | 'DELETE' | 'OPTIONS' | 'PATCH' | 'PUT' | 'HEAD'
 
-export type Params = Record<string, unknown>
+export type Params = Record<string, unknown> | URLSearchParams
 export type IHeaders = Record<string, unknown>
 
 export interface MoriAxiosRequestConfig {
   method?: Method
+  baseURL?: string
   url?: string
   data?: unknown
   params?: Params
   headers?: IHeaders | null
 
+  paramsSerializer?: (params: Params) => string
   validateStatus?: (status: number) => boolean
 }
 

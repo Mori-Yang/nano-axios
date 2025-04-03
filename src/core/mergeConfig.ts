@@ -29,13 +29,15 @@ const deepStrategy: Strategy = (val1: unknown, val2: unknown) => {
   }
 }
 
-const mergeStrategyMap: Record<string, Strategy> = {
+const mergeStrategyMap: Record<keyof MoriAxiosRequestConfig, Strategy> = {
   url: only2Strategy,
   method: defaultStrategy,
   data: only2Strategy,
   params: only2Strategy,
   headers: deepStrategy,
   validateStatus: defaultStrategy,
+  baseURL: only2Strategy,
+  paramsSerializer: only2Strategy,
 }
 
 function mergeConfig(
