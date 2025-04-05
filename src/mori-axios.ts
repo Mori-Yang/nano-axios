@@ -9,9 +9,7 @@ function createInstance<R>(config: MoriAxiosRequestConfig<R | any>): MoriAxiosIn
     : mergeConfig(defaultConfig, config),
   )
 
-  const instance = MoriAxios.prototype.request.bind(ctx)
-
-  return instance as MoriAxiosInstance
+  return ctx as MoriAxiosInstance
 }
 
 const moriAxios = createInstance(defaultConfig)
