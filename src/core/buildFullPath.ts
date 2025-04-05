@@ -1,9 +1,8 @@
 import combineURLS from '../helpers/combineURLs'
 import isAbsoluteURL from '../helpers/isAbsoluteURL'
-import type { MoriAxiosRequestConfig } from '../types'
 import MoriAxiosError, { createMoriAxiosError } from './MoriAxiosError'
 
-export default function buildFullPath(baseURL: MoriAxiosRequestConfig['baseURL'], url: MoriAxiosRequestConfig['baseURL']): string {
+export default function buildFullPath(baseURL: string, url: string): string {
   if (!url) {
     throw createMoriAxiosError(`Wrong URL`, MoriAxiosError.ERR_BAD_REQUEST, { baseURL, url })
   }

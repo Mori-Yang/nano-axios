@@ -5,29 +5,36 @@ export type Method =
 export type Params = Record<string, unknown> | URLSearchParams
 export type IHeaders = Record<string, unknown>
 
-export interface MoriAxiosRequestConfig {
+export type Adapter<R> = Array<string | AdapterInstance<R>> | string | AdapterInstance<R>
+export type AdapterInstance<R> = (config: MoriAxiosRequestConfig<R>) => MoriAxiosPromise<R>
+
+export interface MoriAxiosRequestConfig<R = MoriAxiosResponse<unknown>> {
   method?: Method
   baseURL?: string
   url?: string
   data?: unknown
   params?: Params
   headers?: IHeaders | null
-
+  responseType?: XMLHttpRequestResponseType
+  timeout?: number
+  adapter?: Adapter<R>
   paramsSerializer?: (params: Params) => string
   validateStatus?: (status: number) => boolean
 }
+export type MakeRequired<T, K extends keyof T> = Omit<T, K> & { [P in K]-?: T[P] }
+export type DefaultMoriAxiosRequestConfig = MakeRequired<MoriAxiosRequestConfig<MoriAxiosResponse<unknown>>, 'method' | 'timeout' | 'headers' | 'adapter'>
 
 export interface MoriAxiosResponse<T = unknown> {
   data: T
   status: number
   statusText: string
   headers: IHeaders
-  config: MoriAxiosRequestConfig
+  config: MoriAxiosRequestConfig<MoriAxiosResponse<unknown>>
   request: XMLHttpRequest
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-export interface MoriAxiosPromise<T = unknown> extends Promise<MoriAxiosResponse<T>> {
+export interface MoriAxiosPromise<D, R = (MoriAxiosResponse<D> | D)> extends Promise<R | D> {
 
 }
 
@@ -51,12 +58,12 @@ export interface MoriAxiosError extends Error {
   code?: MoriAxiosErrorCode | null
   config?: MoriAxiosRequestConfig
   request?: XMLHttpRequest | null
-  response?: MoriAxiosResponse
+  response?: MoriAxiosResponse<unknown>
 }
 
 export interface MoriAxios {
   default: MoriAxiosRequestConfig
-  // 重载签名
+
   request(config: MoriAxiosRequestConfig): MoriAxiosPromise<unknown>
   request(url: string, config?: MoriAxiosRequestConfig): MoriAxiosPromise<unknown>
 }

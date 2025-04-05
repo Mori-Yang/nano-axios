@@ -4,7 +4,10 @@ import defaultConfig from './default/default'
 import mergeConfig from './core/mergeConfig'
 
 function createInstance(config: MoriAxiosRequestConfig): MoriAxiosInstance {
-  const ctx = new MoriAxios(mergeConfig(defaultConfig, config))
+  const ctx = new MoriAxios(defaultConfig === config
+    ? defaultConfig
+    : mergeConfig(defaultConfig, config),
+  )
 
   return ctx as MoriAxiosInstance
 }

@@ -1,10 +1,11 @@
 import moriAxios from '../../dist/index.mjs'
 
-const a = moriAxios.create()
-console.log(a, moriAxios)
-
 const url = 'https://npm.antfu.dev/create-mori'
 
+// const adaterTest = moriAxios.create({ adapter: ['fetch'], timeout: 2000 })
+// const block = await adaterTest.request(url)
+// console.log(block)
+// Header
 async function main() {
   const res = await moriAxios.request(url, {
     headers: {
@@ -17,5 +18,3 @@ async function main() {
 
 const res = await main()
 console.log('--normal request--', res)
-
-// Header
