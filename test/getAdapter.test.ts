@@ -22,7 +22,6 @@ describe('should', () => {
         resolve({ data: 1, upstream: 'custom' })
       })
     }
-    // @ts-expect-error: fuck ts
     const instance = moriAxios.create({ adapter: customAdapter })
     expect(instance.default.adapter).toBe(customAdapter)
   })

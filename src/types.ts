@@ -69,6 +69,9 @@ export interface MoriAxios {
 }
 
 export interface MoriAxiosInstance extends MoriAxios {
+  <T = unknown>(config: MoriAxiosRequestConfig<T>): MoriAxiosPromise<T>
+  <T = unknown>(url: string, config: MoriAxiosRequestConfig<T>): MoriAxiosPromise<T>
+
   default: MoriAxiosRequestConfig
-  create: (config: MoriAxiosRequestConfig) => MoriAxios
+  create: <R>(config: MoriAxiosRequestConfig<R>) => MoriAxios
 }
