@@ -7,8 +7,40 @@ const url = '/create-mori'
 // console.log(block)
 // Header
 
+// Interceptor
+// moriAxios.interceptors.request.use((config) => {
+//   console.log('req interceptor1', config)
+//   return config
+// }, (err) => {
+//   console.log(err)
+// })
+
+// moriAxios.interceptors.request.use((config) => {
+//   console.log('req interceptor2', config)
+//   return config
+// }, (err) => {
+//   console.log(err)
+// })
+
+// moriAxios.interceptors.request.use((config) => {
+//   return new Promise((resolve) => {
+//     setTimeout(() => {
+//       console.log('req interceptors3')
+//       resolve(config)
+//     }, 300)
+//   })
+// })
+
+moriAxios.interceptors.response.use((response) => {
+  console.log('res interceptor', response)
+  return response
+})
+
+// moriAxios.request(`https://npm.antfu.dev${url}`).then((res) => {
+//   console.log(res)
+// })
+
 async function main() {
-  console.log(moriAxios)
   const res = await moriAxios.request(url, {
     baseURL: 'https://npm.antfu.dev',
     headers: {

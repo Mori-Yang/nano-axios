@@ -61,8 +61,14 @@ export interface MoriAxiosError extends Error {
   response?: MoriAxiosResponse<unknown>
 }
 
+export interface Interceptors {
+  request: InterceptorManagerClass<MoriAxiosRequestConfig>
+  response: InterceptorManagerClass<MoriAxiosResponse>
+}
+
 export interface MoriAxios {
   default: MoriAxiosRequestConfig
+  interceptors: Interceptors
 
   request(config: MoriAxiosRequestConfig): MoriAxiosPromise<unknown>
   request(url: string, config?: MoriAxiosRequestConfig): MoriAxiosPromise<unknown>
@@ -74,4 +80,21 @@ export interface MoriAxiosInstance extends MoriAxios {
 
   default: MoriAxiosRequestConfig
   create: <R>(config: MoriAxiosRequestConfig<R>) => MoriAxios
+}
+
+export interface ResolvedFn<T> {
+  (val: T): T | Promise<T>
+}
+
+export interface RejectedFn {
+  (err: any): any
+}
+export interface Interceptor<T> {
+  resolved: ResolvedFn<T>
+  rejected?: RejectedFn
+}
+export interface InterceptorManagerClass<T> {
+  use(resolved: ResolvedFn<T>, rejected: RejectedFn): number
+  eject(id: number): void
+  forEach(cb: (interceptor: Interceptor<T>) => void): void
 }
