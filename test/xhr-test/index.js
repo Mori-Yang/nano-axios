@@ -7,7 +7,7 @@ const url = '/create-mori'
 // console.log(block)
 // Header
 
-// Interceptor
+// ------------Interceptor
 // moriAxios.interceptors.request.use((config) => {
 //   console.log('req interceptor1', config)
 //   return config
@@ -31,14 +31,11 @@ const url = '/create-mori'
 //   })
 // })
 
-moriAxios.interceptors.response.use((response) => {
-  console.log('res interceptor', response)
-  return response
-})
-
-// moriAxios.request(`https://npm.antfu.dev${url}`).then((res) => {
-//   console.log(res)
+// moriAxios.interceptors.response.use((response) => {
+//   console.log('res interceptor', response)
+//   return response
 // })
+// ------------Interceptor
 
 async function main() {
   const res = await moriAxios.request(url, {
@@ -53,3 +50,13 @@ async function main() {
 
 const res = await main()
 console.log('--normal request--', res)
+
+// cancel
+let cancel
+moriAxios.request(url, {
+  cancelToken: new moriAxios.CancelToken((c) => {
+    cancel = c
+  }),
+})
+
+cancel('cancel')

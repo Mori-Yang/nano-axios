@@ -1,7 +1,7 @@
 import MoriAxiosError, { createMoriAxiosError } from '../core/MoriAxiosError'
 import settle from '../core/settle'
 import resolveConfig from '../helpers/resolveConfig'
-import type { AdapterInstance, MoriAxiosResponse } from '../types'
+import type { AdapterInstance, MoriAxiosResponse, reason } from '../types'
 
 const isXHRAdapterSupported = typeof XMLHttpRequest !== 'undefined'
 
@@ -10,12 +10,23 @@ const xhrAdapter: AdapterInstance<MoriAxiosResponse> = (config) => {
     // pre processing
     config = resolveConfig(config)
 
-    const { data = null, url, method = 'GET', headers, timeout } = config
+    const { data = null, url, method = 'GET', headers, timeout, cancelToken } = config
     let request: XMLHttpRequest | null | undefined = new XMLHttpRequest()
 
     if (!url) {
       reject(createMoriAxiosError('Without url', MoriAxiosError.ERR_BAD_REQUEST, config, request))
     }
+
+    let onCanceled: (reason: reason) => void
+
+    if (cancelToken) {
+      onCanceled = (reason: reason) => {
+        if (!request) return
+        reject(reason)
+        request?.abort()
+      }
+    }
+
     // -------XHR Event Listeners-------
     request.timeout = timeout!
     request.ontimeout = function handleTimeout() {
@@ -63,6 +74,10 @@ const xhrAdapter: AdapterInstance<MoriAxiosResponse> = (config) => {
       request = null
     }
     // -------XHR Event Listeners-------
+
+    cancelToken?.promise.then((reason) => {
+      onCanceled(reason)
+    })
 
     request.open(method.toUpperCase(), url!, true)
 

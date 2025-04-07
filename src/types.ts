@@ -1,3 +1,5 @@
+import type CancelToken from './cancel/CancelToken'
+
 export type Method =
   'get' | 'post' | 'delete' | 'options' | 'pathc' | 'put' | 'head' |
   'GET' | 'POST' | 'DELETE' | 'OPTIONS' | 'PATCH' | 'PUT' | 'HEAD'
@@ -7,6 +9,23 @@ export type IHeaders = Record<string, unknown>
 
 export type Adapter<R> = Array<string | AdapterInstance<R>> | string | AdapterInstance<R>
 export type AdapterInstance<R> = (config: MoriAxiosRequestConfig<R>) => MoriAxiosPromise<R>
+
+export type reason = string
+
+export interface ResolvedFunction {
+  (reason?: string): void
+}
+export interface EmitCancel {
+  (message: string): void
+}
+export interface CancelExecutor {
+  (cancel: EmitCancel): void
+}
+export interface CancelTokenClass {
+  promise: Promise<reason>
+  reason?: reason
+  throwIfRequested: () => void
+}
 
 export interface MoriAxiosRequestConfig<R = MoriAxiosResponse<unknown>> {
   method?: Method
@@ -18,6 +37,7 @@ export interface MoriAxiosRequestConfig<R = MoriAxiosResponse<unknown>> {
   responseType?: XMLHttpRequestResponseType
   timeout?: number
   adapter?: Adapter<R>
+  cancelToken?: CancelTokenClass
   paramsSerializer?: (params: Params) => string
   validateStatus?: (status: number) => boolean
 }
@@ -80,6 +100,7 @@ export interface MoriAxiosInstance extends MoriAxios {
 
   default: MoriAxiosRequestConfig
   create: <R>(config: MoriAxiosRequestConfig<R>) => MoriAxios
+  CancelToken: typeof CancelToken
 }
 
 export interface ResolvedFn<T> {
