@@ -41,7 +41,8 @@ const mergeStrategyMap: Record<keyof MoriAxiosRequestConfig, Strategy> = {
   baseURL: only2Strategy,
   paramsSerializer: only2Strategy,
   responseType: only2Strategy,
-  cacelToken: only2Strategy,
+  cancelToken: only2Strategy,
+  signal: only2Strategy,
 }
 
 function mergeConfig(

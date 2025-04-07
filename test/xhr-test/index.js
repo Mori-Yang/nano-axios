@@ -37,26 +37,44 @@ const url = '/create-mori'
 // })
 // ------------Interceptor
 
-async function main() {
-  const res = await moriAxios.request(url, {
-    baseURL: 'https://npm.antfu.dev',
-    headers: {
-      'X-Custom': 'Mori',
-      'Content-Type': 'application/text',
-    },
-  })
-  return res
-}
+// async function main() {
+//   const res = await moriAxios.request(url, {
+//     baseURL: 'https://npm.antfu.dev',
+//     headers: {
+//       'X-Custom': 'Mori',
+//       'Content-Type': 'application/text',
+//     },
+//   })
+//   return res
+// }
 
-const res = await main()
-console.log('--normal request--', res)
+// const res = await main()
+// console.log('--normal request--', res)
 
-// cancel
-let cancel
+// cancel: Token
+// let cancel
+// await moriAxios.request(url, {
+//   cancelToken: new moriAxios.CancelToken((c) => {
+//     cancel = c
+//   }),
+// })
+
+// cancel('cancel')
+
+// cancel: Signal
+let controller = new AbortController()
 moriAxios.request(url, {
-  cancelToken: new moriAxios.CancelToken((c) => {
-    cancel = c
-  }),
+  baseURL: 'https://npm.antfu.dev',
+  signal: controller.signal,
 })
 
-cancel('cancel')
+controller.abort('xxxx')
+console.log(res)
+
+// let controller = new AbortController()
+// axios.request(url, {
+//   baseURL: 'https://npm.antfu.dev',
+//   signal: controller.signal,
+// })
+
+// controller.abort('xxxx')

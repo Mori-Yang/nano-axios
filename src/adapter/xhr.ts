@@ -10,7 +10,7 @@ const xhrAdapter: AdapterInstance<MoriAxiosResponse> = (config) => {
     // pre processing
     config = resolveConfig(config)
 
-    const { data = null, url, method = 'GET', headers, timeout, cancelToken } = config
+    const { data = null, url, method = 'GET', headers, timeout, cancelToken, signal } = config
     let request: XMLHttpRequest | null | undefined = new XMLHttpRequest()
 
     if (!url) {
@@ -19,11 +19,11 @@ const xhrAdapter: AdapterInstance<MoriAxiosResponse> = (config) => {
 
     let onCanceled: (reason: reason) => void
 
-    if (cancelToken) {
+    if (cancelToken || signal) {
       onCanceled = (reason: reason) => {
         if (!request) return
         reject(reason)
-        request?.abort()
+        request.abort()
       }
     }
 
@@ -35,6 +35,13 @@ const xhrAdapter: AdapterInstance<MoriAxiosResponse> = (config) => {
 
       request = null
     }
+
+    const cleanup = () => {
+      if (signal) {
+        signal?.removeEventListener('abort', onCanceled as unknown as any)
+      }
+    }
+
     /**
      * XMLHttpRequest.readyState
      * 1-OPENED: open() has been called
@@ -55,7 +62,17 @@ const xhrAdapter: AdapterInstance<MoriAxiosResponse> = (config) => {
         request,
       }
 
-      settle(resolve, reject, response)
+      settle(
+        (val) => {
+          resolve(val)
+          cleanup()
+        },
+        (val) => {
+          reject(val)
+          cleanup()
+        },
+        response,
+      )
 
       request = null
     }
@@ -74,14 +91,24 @@ const xhrAdapter: AdapterInstance<MoriAxiosResponse> = (config) => {
       request = null
     }
     // -------XHR Event Listeners-------
-
-    cancelToken?.promise.then((reason) => {
-      onCanceled(reason)
-    })
-
     request.open(method.toUpperCase(), url!, true)
 
-    request.send(data as XMLHttpRequestBodyInit || null)
+    if (cancelToken || signal) {
+      cancelToken?.promise.then((reason) => {
+        onCanceled(reason)
+      })
+      if (signal) {
+        // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+        signal.aborted
+          ? onCanceled!(signal.reason)
+          : signal.addEventListener('abort', () => {
+            console.log('signal cancel')
+            onCanceled!(signal.reason)
+          })
+      }
+    }
+
+    request?.send(data as XMLHttpRequestBodyInit || null)
   })
 }
 

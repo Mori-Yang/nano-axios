@@ -38,6 +38,7 @@ export interface MoriAxiosRequestConfig<R = MoriAxiosResponse<unknown>> {
   timeout?: number
   adapter?: Adapter<R>
   cancelToken?: CancelTokenClass
+  signal?: AbortSignal
   paramsSerializer?: (params: Params) => string
   validateStatus?: (status: number) => boolean
 }
